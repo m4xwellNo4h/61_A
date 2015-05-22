@@ -1,0 +1,100 @@
+;c
+(define (torque branch)
+  (* (branch-weight branch) (branch-length branch)))
+
+(define (branch-balanced? branch)
+   (if (pair? (branch-structure branch))
+       (balanced? (branch-structure branch))
+       #t))
+
+(define (balanced? mobile)
+   (and (= (branch-torque (left-branch mobile))
+           (branch-torque (right-branch mobile)))
+        (branch-balanced? (left-branch mobile))
+        (branch-balanced? (right-branch mobile))))
+
+; The difference in this case woul lie in how we define the first procedures of the program. The procedure for the defintion of right-branch and branch-structure would need to be written like so. This is because cons is used to create a pair of two items instead of list. 
+
+(define (right-branch mobile)
+   (cdr mobile))
+
+(define (branch-structure branch)
+   (cdr branch))
+
+;2.30 
+; first implementation
+(define (square-tree tree)
+   (cond ((null? tree) tree)
+         ((not (pair? tree)) (* tree tree))
+         (else (cons (square-tree (car tree))
+                     (square-tree (cdr tree))))))
+
+; second implementation
+(define (square-tree tree)
+   (map (lambda (inner-tree)
+          (if (pair? inner-tree)
+              (square-tree inner-tree)
+              (* inner-tree inner-tree)))
+        tree))
+
+;2.31
+
+(define (tree-map proc tree) 
+   (map (lambda (sub-tree) 
+          (if (pair? sub-tree) 
+            (tree-map proc sub-tree) 
+            (proc sub-tree))) 
+        tree))
+
+;2.32
+
+(define (subsets s)
+  (if (null? s)
+      (list nil)
+      (let ((rest (subsets (cdr s))))
+       (append rest (map (lambda (x) (cons (car s) x))
+                            rest)))))
+
+;2.36
+
+; accumulate from earlier
+ (define (accumulate op initial sequence) 
+   (if (null? sequence) 
+       initial 
+       (op (car sequence) 
+           (accumulate op initial (cdr sequence))))) 
+  
+  
+;; accumulate-n 
+ (define (accumulate-n op init sequence) 
+   (define nil '()) 
+   (if (null? (car sequence)) 
+       nil 
+       (cons (accumulate op init (map car sequence)) 
+             (accumulate-n op init (map cdr sequence))))) 
+
+
+;2.37
+
+(define (matrix-*-vector m v)
+   (map (lambda (row) (dot-product row v)) m))
+
+
+;2.38
+
+1 1/2
+
+1/6
+
+(1 (2 (3 ())))
+
+(((() 1) 2) 3)
+	
+;2.54
+
+(define (equal-list? a b) 
+   (if (and (pair? a) (pair? b)) 
+       (and (equal-list? (car a) (car b)) (equal-list? (cdr a) (cdr b))) 
+       (eq? a b))) 
+
+
