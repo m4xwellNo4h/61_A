@@ -1,0 +1,37 @@
+;This statement simplifies to a procedure that takes two parameters as arguemnts and and passes two parameters to it. This procedure returns x.
+((lambda (p q) p) x y)
+
+;6
+(define (reverse set)
+  (if
+   (null? (cdr set))
+   set
+   (append (reverse (cdr set)) (cons (car set) nil)))))
+
+;8 Substitute 
+
+(define (substitute list old-word new-word)
+  (if (null? (cdr list)) list
+      (append
+       (if (list? (car list))
+	   (list (substitute (car list) old-word new-word))
+	   (if (equal? (car list) old-word)
+	       (list new-word)
+	       (list (car list)))) (substitute (cdr list) old-word new-word))))
+	       
+;;Function doesn't work because there is a bad fucntion in (list (substitute (car list) old-word new-word)) causing an error. 
+
+
+
+
+
+;9 
+
+(define (substitute2 list list-old list-new)
+  (if (null? (cdr list)) list
+      (append
+       (if (list? (car list))
+	   (list (substitute (car list) old-word new-word))
+	   (if (equal? (car list) old-word)
+	       (list new-word)
+	       (list (car list)))) (substitute (cdr list) old-word new-word))))
