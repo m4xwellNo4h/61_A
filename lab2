@@ -1,0 +1,273 @@
+LAB 2.0
+
+;;;;;;;Exercise 2;;;;;;;;;
+
+(define (substitute sent old new)
+	(cond
+	((empty? sent) '())
+	((equal? (first sent) old) (sentence new (substitute (butfirst sent) old new)))
+	(else (sentence (first sent) (substitute (butfirst sent) old new)))))
+
+;;;;;;;Exercise 3;;;;;;;;;
+
+;; (g) has 0 arguments because nothing is followed after (g.
+Type of value returned by g: numerical
+
+;;;;;;;Exercise 4:;;;;;;;;;
+
+Q1: f
+(define f 2)
+value: 2
+
+Q2: (f)
+(define (f x) 2)
+value: 2
+
+Q3: (f 3)
+(define (f x) (+ 1 x))
+value: 4
+
+Q4: ((f))
+(define (f) (lambda () 2))
+value: 2
+
+Q5: ((f)) 3)
+(define (f) (lambda () 2))
+value: 2
+
+;;;;;;;;;Exercise 5:;;;;;;;
+
+(define (t f) (lambda (x) (f (f (f x)))))
+
+(define (1+ x) (+ x 1))
+;; I think the interpreter is bad. 1+ is not recognized.
+
+((t 1+) 0)
+;; 3
+
+((t (t 1+)) 0)
+
+;;9
+
+(((t t) 1+) 0)
+;; 27
+
+;;;;;;;Exercise 6:;;;;;;;;;
+
+(define (t f) (lambda (x) (f (f (f x)))))
+
+(define (s x) (+ x 1))
+
+((t s) 0)
+;; 3
+
+((t (t s)) 0)
+;;9
+
+(((t t) s) 0)
+;; 27
+
+;;;;;;;;Exercise 7:;;;;;;;;;;
+
+(define (make-tester w) (lambda (x) (equal? x w)))
+
+(define sicp-author-and-astronomer? (make-tester 'gerry))
+
+
+
+Exercise 8;;;;;
+
+1.31(a);;;;;
+ (define (product term a next b) 
+     (if(>= a b) 1 
+        (* (term a) (product term (next a) next b)))) 
+
+
+(define (identity x) x)
+(define (nest x) (+ x 1)
+(define (factorial n)
+  (product identity 1 next n))
+
+(define (pi/4 term a next b)
+(if (> a b)
+1
+(* (term (* (/ (next a) (next (next a)))
+(/ (next (next (next a))) (next (next a)))))
+(pi/4 term (next (next a)) next b))))
+
+;;;;;;;132.a;;;;;;;
+
+(define (accumulate combiner null-value term a next b)
+(if (> a b)
+null-value
+(combiner (term a) (accumulate combiner null-value term
+(next a) next b))))
+
+> (accumulate + 0 (lambda (x) x) 1 inc 10)
+55
+> (accumulate * 1 (lambda (x) x) 1 inc 6)
+720
+
+;;;;;;;;;1.33;;;;;;;;;;;
+(define (filter-accumulate filter combiner null-value term a
+next b)
+(cond ((> a b) null-value)
+((filter a) (combiner (term a)
+(filter-accumulate filter combiner
+null-value
+term (next a) next b))
+)
+(else (combiner (term (next a)
+(filter-accumulate filter combiner
+null-value
+term (next (next a))
+next b))))))
+
+(a).
+
+(define (sum-square-prime a b) (filter-accumulate prime? + 0
+(lambda (x) (* x x)) a inc b))
+
+(b).
+
+(define (relatively-prime? i n) (and (> n i) (prime? i) (prime?
+n) (> 2 (div n i))))
+
+(define (product-relative-prime a b)
+(filter-accumulate relatively-prime? + 0 (lambda (x) x) a inc
+b))
+
+;;;;;;;;;;1.40;;;;;;;;;;;
+(define tolerance 0.00001)
+
+(define (fixed-point f first-guess)
+(define (close-enough? v1 v2)
+(< (abs (- v1 v2)) tolerance))
+(define (try guess)
+(let ((next (f guess)))
+(if (close-enough? guess next)
+next
+(try next))))
+(try first-guess))
+
+(define dx 0.00001)
+
+(define (deriv g)
+(lambda (x)
+(/ (- (g (+ x dx)) (g x))
+dx)))
+
+(define (newton-transform g)
+(lambda (x)
+(- x (/ (g x) ((deriv g) x)))))
+
+(define (newtons-method g guess)
+(fixed-point (newton-transform g) guess))
+
+(define (cubic a b c) (lambda (x)
+(+ (* x x x) (* a x x) (* b x) c)))
+
+;;;;;;;;;;1.41;;;;;;;;;;;;;;
+(define (double f) (lambda (x) (f (f x))))
+
+(define (inc x) (+ x 1))
+
+;;;;;;;;1.43;;;;;;;;;;;;
+(define (square x) (* x x))
+
+(define (compose f g) (lambda (x) (f (g x))))
+
+(define (repeated f x)
+(if (= x 1)
+f
+
+(compose f (repeated f (- x 1)))))
+
+> (((double (double double)) inc) 5)
+21
+;;;;;;;;;;
+(define (factorial a b)
+  (if (> b a)
+      1
+      (* a (factorial (- a 1) b ))))
+
+;;;;;;;;1.46;;;;;;;;;;;
+(define (sqrt x) (sqrt-iter 1.0 x))
+
+(define (sqrt-iter guess x)
+(if (good-enough? guess x)
+guess
+(sqrt-iter (improve guess x) x)))
+
+(define (improve guess x) (average guess (/ x guess)))
+
+(define (average x y) (/ (+ x y) 2))
+
+(define (good-enough? guess x) (< (abs (- (square guess) x))
+0.001))
+
+(define (square x) (* x x))
+
+(define tolerance 0.00001)
+
+(define (fixed-point f first-guess)
+(define (close-enough? v1 v2) (< (abs (- v1 v2)) tolerance))
+(define (try guess)
+(let ((next (f guess)))
+(if (close-enough? guess next)
+next
+(try next))))
+(try first-guess))
+
+(define (iterative-improve good-enough? improve)
+(define (iter-imp guess)
+(if (good-enough? guess)
+guess
+(iter-imp (improve guess)))) iter-imp)
+
+(define (sqrt x) ((iterative-improve
+(lambda (guess)
+(< (abs (- (square guess) x)) 0.001))
+(lambda (guess)
+(average guess (/ x guess)))) 1.0))
+
+(define (fixed-point f first-guess)
+((iterative-improve (lambda (guess)
+(< (abs (- (f guess) guess)) 0.00001))
+
+(lambda (guess) (f guess))) first-guess))
+
+;;;;;;;;;;;9;;;;;;;;;;;;
+
+
+(define (every fn sent)
+  (if
+   (empty? sent)
+   '()
+   (sentence (fn (first sent)) (every fn (butfirst sent)))))
+
+
+;;;;;;;;;10;;;;;;;;;;;
+> (every (lambda (letter) (word letter letter)) 'purple)
+(pp uu rr pp ll ee)
+
+> (every (lambda (number) (if (even? number) (word number
+number) number))
+'(781 5 76 909 24))
+(781 5 7676 909 2424)
+
+> (keep even? '(781 5 76 909 24))
+(76 24)
+
+> (keep (lambda (letter) (member? letter 'aeiou)) 'bookkeeper)
+ooeee
+
+> (keep (lambda (letter) (member? letter 'aeiou)) 'syzygy)
+“”
+
+> (keep (lambda (letter) (member? letter 'aeiou)) '(purple
+syzygy))
+;; error
+
+> (keep (lambda (wd) (member? 'e wd)) '(purple syzygy))
+(purple)
