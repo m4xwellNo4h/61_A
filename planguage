@@ -1,0 +1,22 @@
+
+(define (start wrd)
+	(cond
+	((empty? wrd) "")
+	((and (vowel? (first wrd)) (nonvowel? (first (butfirst wrd)))) (word (first wrd) 'p (first wrd)))
+	  ((and (vowel? (first wrd)) (vowel? (first (butfirst wrd)))) (word (first wrd) (first (butfirst wrd)) 'p (first wrd) (first (butfirst wrd))))
+	     ((and (vowel? (first wrd)) (vowel? (first (butfirst wrd))) (vowel? (first (bf (bf wrd))))) (word (first wrd) (first (bf wrd)) (first (bf (bf wrd))) 'p (first wrd) (first (bf wrd)) (first (bf (bf wrd)))))
+		((and (vowel? (first wrd)) (vowel? (first (butfirst wrd))) (vowel? (first (bf (bf wrd)))) (vowel? (first (bf (bf (bf wrd)))))) (word (first wrd) (first (bf wrd)) (first (bf (bf wrd))) (first (bf (bf (bf wrd)))) 'p (first wrd) (first (bf wrd)) (first (bf (bf wrd))) (first (bf (bf (bf wrd))))))
+			(else (word (first wrd) (start (butfirst wrd)))))
+
+
+(define (rest wrd)
+(cond
+((empty? wrd) "")
+((vowel? (first wrd)) (butfirst wrd))
+(else (rest (butfirst wrd)))))
+
+(define (planguage wrd)
+(if
+	(empty? wrd)
+	""
+	(word (start wrd) (planguage (rest wrd)))))
