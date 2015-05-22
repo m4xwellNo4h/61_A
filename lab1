@@ -1,0 +1,143 @@
+;;;;One
+
+(define (vowel? x)
+(member? x '(a e i o u y)))
+
+
+(define (plural wrd)
+ (cond
+  ((vowel? (last (butlast wrd))) (word wrd 's))
+  ((equal? (last wrd) 'y) (word (butlast wrd) 'ies) )
+  (else (word wrd 's))
+ ))
+
+;;;Two
+
+(define (square x)
+(* x x))
+
+(define (sum-of-squares x y)
+(+ (square x) (square y))
+)
+
+(define (max-sum-squares x y z)
+ (cond
+    ((and (> x  y) (> z y)) (sum-of-squares x z))
+    ((and (> y x)  (> z x)) (sum-of-squares y z))
+     (else (sum-of-squares x y))
+
+;;;;Three
+
+(define (dupls-removed sent)
+   (cond ((empty? sent) '())
+                    ((member?  (first sent) (butfirst sent))
+                     (dupls-removed (butfirst sent)))
+                     (else (sentence (first sent) (dupls-removed (butfirst sent))))
+))
+           
+
+;;;Four
+
+(define (vowel? x)
+(member? x '(a e i o u y)))
+
+(define (pigl wd)
+(cond
+  ((vowel? (first wd)) (word wd 'ay))
+  (else (pigl (word (butfirst wd) (first wd)  )))
+))
+
+
+;;;Five
+
+(define (count sent wrd)
+  (cond
+  ((empty? sent) '())
+  ((equal? wrd (first sent)) (+ 1 (count (butfirst sent) wrd)))
+  ((equal? wrd (first (butfirst sent))) (+ 1 (count (butfirst (butfirst sent)) wrd)))
+  (else 0)
+))
+
+
+;;;;Six
+
+The procedure of pigl will fail if you try to use the new-if procedure instead of the if procedure.
+In pigl, the first case in the if statement should be evaluated to test for truth and if it is true it should evaluate the first statement. If it is false the procedure should evaluate the second procedure. The new-if procedure incorrectly evaluates the sub-expressions before testing the first statement of pigl, therefore the recursive function will be incorrectly evaluated and scheme will treat new-if like a regular function without considering the boolean response of the if function. 
+
+
+
+
+;;;Seven
+
+(define (number? wrd)
+(member? (first wrd) '0123456789))
+
+(define (square x)
+(* x x))
+
+(define (squares sent)
+ (cond
+   ((empty? sent) '())
+   ((number? (first sent)) (sentence (square (first sent)) (squares (butfirst sent))))
+ (else 0)
+))
+
+;;;Eight
+
+(define (switch-helper sent)
+    (cond 
+          ((empty? sent) '())
+          ((equal? (first sent) 'i)  (sentence 'you (switch-helper (butfirst sent)))) 
+          ((equal? (first sent) 'me) (sentence 'you (switch-helper (butfirst sent)))) 
+          ((equal? (first sent) 'you) (sentence 'me (switch-helper (butfirst sent))))
+          (else (sentence (first sent) (switch-helper (butfirst sent))))))
+
+(define (switch sent)
+  (if
+    (equal? (first sent) 'you)
+    (sentence 'i (switch-helper (butfirst sent)))
+    (switch-helper sent)))
+
+
+
+
+;;;;;;;;;Nine
+
+(define (ordered? sent)
+  (cond
+      ((empty? sent) #t)
+      ((equal? (count sent) 1) #t)
+      ((< (first sent) (first (butfirst sent))) (ordered? (butfirst sent)))
+      (else #f)))
+
+;;;;;;Ten
+
+(define (e? wrd)
+     (equal? (last wrd) 'e))
+
+(define (ends-e sent)
+   (cond
+      ((empty? sent) '())
+      ((e? (first sent)) (sentence (first sent) (ends-e (butfirst sent))))
+      (else (ends-e (butfirst sent)))))
+
+
+;;;;;;Eleven
+
+(define (test special-form-or)
+	(special-form-or
+	(= 3 4)
+	(infinite loop)
+	#t))
+	
+(define (test special-form-and)
+	(special-form-and
+	(= 3 4)
+	(infinite loop)
+	#t))
+	
+- The code doesn't work for this case because I defined the procedure wrong. I know what I wanted to test for, but I could't seem to et the code right. I wanted to test for special forms by either evaluating infinite loops or not evaluating infinite loops and based on the return I would be able to tell whether or not the special forms were actually special forms depending on which procedures they actually evaluated and what results they returned. 
+
+it is advantageous to be a special form when one wants the programs to not run through all of the evaluations. Certain special forms will not evaluate all procedures in a program and will save time in terms of efficeincy. Special forms are beneficial procedures when you are writing code that does not need to evaluate all of the conditions that are set out by they code.
+
+However, it is advantageous to be a procedure when the program being created should go thorough all of the written functions when evaluating the code. In this way scheme is evaluating all of the functions as procedure calls. In that case of the special form scheme is not evaluating all of those calls as procedure calls. 
