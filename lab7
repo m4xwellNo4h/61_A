@@ -1,0 +1,89 @@
+;;;Lab 7                                                                                                                               
+
+
+;Exercise 1;                                                                                                                           
+(define-class (person name)
+  (instance-vars (previous-statement '()))
+  (method (say stuff) (set! previous-statement stuff) stuff)
+  (method (ask stuff) (ask self 'say (se '(would you please) stuff)))
+  (method (greet) (ask self 'say (se '(hello my name is) name)))
+  (method (repeat) (ask self 'say previous-statement)))
+;Exercise 2;                                                                                                                           
+(define-class (double-talker name)
+  (parent (person name))
+  (method (say stuff) (se (usual 'say stuff) (ask self 'repeat))) )
+;Definition does not work as intended. Code results in a infinite loop due to the fact that passing the call 'repeat will call 'say in the child of the original class
+                                                                                                     
+
+(define-class (double-talker name)
+  (parent (person name))
+  (method (say stuff) (se stuff stuff)) )
+;Definition works fine for the purpose of "talking twice" as is the intended function of the double-talker. However this specific definition of the double-talker does not respond to the repeat method because the parent class 'say is never used in the defintion so set! never alters the state of the "previous-statement" variable                                                                            
+(define-class (double-talker name)
+  (parent (person name))
+  (method (say stuff) (usual 'say (se stuff stuff))) )
+;This is the only method of the three that works as it should and responds to the repeat message as well.
+
+;Exercise 3;
+
+(define-class (random-generator number)
+  (instance-vars (count 0))
+  (method (number) (set! count (+ count 1))
+	  (random 10))
+  (method (count)
+	  count))
+
+;Exercise 4;
+
+(define-class (coke-machine maximum-cokes coke-price)
+  (instance-vars (coke-number 0)  (deposited-amount 0))
+ (method (deposit amount)
+	  (set! deposited-amount (+ deposited-amount amount)))
+ (method (coke) 
+	 (cond
+	  ((and (> coke-number 0)
+		(>= deposited-amount coke-price)) (- deposited-amount coke-price))
+	  ((and (> coke-number 0) (< deposited-amount coke-price)) (print "Insufficient Funds"))
+	  ((equal? coke-number 0) (print "Machine Empty"))))
+ (method (fill n)
+	 (if 
+	  (<= n (- maximum-cokes coke-number))
+	  (set! coke-number (+ coke-number n))
+	  (print "Hot damn. That's an error."))))
+	  
+	   
+;Exercise 5;
+
+(define ordered-deck '(AH 2H 3H ... QH KH AS 2S ... QC KC))
+
+(define (shuffle deck)
+  (if (null? deck)
+      '()
+      (let ((card (nth (random (length deck)) deck)))
+	(cons card (shuffle (remove card deck))) )))
+
+(define-class (deck card-deck)
+  (shuffle card-deck)
+  (method (deal)
+	  (car card-deck) 
+	  (set! (card-deck (cdr card-deck))))
+  (method (empty?)
+	  (empty? card-deck))
+
+(define-class (deck2 card-deck)
+  (parent (deck card-deck))
+  (instantiate-vars
+
+; Exercise 6;
+
+(define-class (person name)
+  (instance-vars (previous-statement '()))
+  (method (say stuff) (set! previous-statement stuff) stuff)
+  (method (ask stuff) (ask self 'say (se '(would you please) stuff)))
+  (method (greet) (ask self 'say (se '(hello my name is) name)))
+  (method (repeat) (ask self 'say previous-statement)))
+
+(define-class (miss-manners object)
+  (instance-vars (msg '()) (argument '()))
+  (method (please msg argument)
+	  (ask object msg argument)))
