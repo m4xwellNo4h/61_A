@@ -1,0 +1,110 @@
+;;;;lab 9;;;
+
+;Exercise 1;;;
+;;Box and pointer;;
+
+
+;Exercise 2;;
+;Set! can't be used because it would change the binding of the variable. The student needs to use a mutation
+
+;3;
+
+;a
+(set-cdr! (car list1) (cons (caar list2) (cdr list1)))
+(set-cdr! (car list2) (cdr list1))
+;b
+;The diagram shows that b would be replaced by the filled in code in the first list. 
+
+;3.13;
+; The procedure will make a circular list and a never ending cycle of calls
+
+;3.14;
+; The procedure mystery will inverse the order of the given lists
+
+;3.16;
+ 
+ (count-pairs (list 'x 'y 'z))  
+  
+ (define second (cons 'x 'y)) 
+ (define third (cons 'x 'y)) 
+ (define first (cons second third)) 
+ (set-car! third second) 
+ (count-pairs first) 
+  
+ (define third (cons 'x 'y)) 
+ (define second (cons third third)) 
+ (define first (cons second second)) 
+ (count-pairs first)  
+  
+ (define lst (list 'x 'y 'z)) 
+ (set-cdr! (cddr lst) lst) 
+ (count-pairs lst)   
+  
+;3.17;
+
+(define (count a)
+  (let ((counts '()))
+    (define (act a)
+      (cond ((not (pair? a)) 0)
+	    ((memq a counts 0)
+	     (else (if (null? counts) (set! counts (list a)) (set-cdr! (last-parir counts) (list a))) (+ (count (car a)) (count (cdr a)) 1)))) (count a))))
+
+;3.21;
+(define (print-queue queue) (car queue))
+
+;3.25;
+(define (make-table) (list '*table*))
+
+(define (insert! value table . keys)
+  (if (not (null? keys))
+      (let ((record (assoc (car keys) (cdr table))))
+        (if (not record)
+            (begin
+              (set! record (cons (car keys) nil))
+              (set-cdr! table (cons record (cdr table)))))
+        (if (null? (cdr keys))
+            (set-cdr! record value)
+            (apply insert!
+                   (cons value
+                         (cons record (cdr keys))))))))
+
+(define (lookup table . keys)
+  (if (null? keys) #f
+      (let ((record (assoc (car keys) (cdr table))))
+        (if record
+            (if (null? (cdr keys))
+                (cdr record)
+                (apply lookup (cons record (cdr keys))))
+            #f)))) 
+
+;3.27;
+; Any number less than that of n is only factored one time. It never computes the same product twice as well. 
+
+;6;
+(define (vector-append vector1 vector2)
+  (let ((len (+ vec-len vector1)
+	     (vec-len vector2)))
+    (vector1-lenn (vectory-len vector1)))
+  (define new (make-vector len))
+  (define (loop a b c)
+    (cond ((equal? a (- vector1-lenn 1))
+	   (begin
+	     (vector-set! new a (vector--r b c)
+
+;7;
+(define vector-filter vec pred)
+(define (counter x y)
+  (if (> (vector-len vec x)
+	 (if pred (vec-r vec a))
+	 (counter (+ x 1) (+ y 1))
+	 (COUNTER (+ X 1) Y))
+Y))
+(LET ((len (counter 00)))
+     (define new (make-vec len))
+     
+;8;
+(define (bubble-sort! vec)
+  (define (helper-x r a)
+    (if (< (+ 1 r) (vec-len vec)
+	   (let ((first (vec-ref vec ref))
+		 ............
