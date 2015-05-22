@@ -1,0 +1,107 @@
+(define (alter sent strat1 strat2)
+  (cond
+   ((empty? sent) sent)
+   ((equal? (count sent) 1) (strat1  (first sent)))
+   (else (sentence (strat1 (first sent)) (strat2 (first (bf sent))) (alter (bf (bf sent)) strat1 strat2)))))
+
+
+
+
+(define (function-helper func arg times)
+  (if
+  (equal? (first times) 0)
+  arg
+  (function-helper func (func  arg)  (- times 1))))
+
+(define (function func arg times)
+  (if
+   (empty? arg)
+   arg
+   (sentence (function-helper func (first arg) (first times)) (function func (bf arg) (bf times)))))
+   
+
+((lambda (a b) (< a b) 5 a))
+
+
+(define (first-denomination kinds-of-coins)
+  (cond ((= kinds-of-coins 1) 1)
+	((= kinds-of-coins 2) 5)
+	((= kinds-of-coins 3) 10)
+	((= kinds-of-coins 4) 25)
+	((= kinds-of-coins 5) 50)))
+
+(define (cc amount kinds-of-coins)
+  (cond ((= amount 0) 1)
+	((or (< amount 0) (= kinds-of-coins 0)) 0)
+	(else (+ (cc amount
+		     (- kinds-of-coins 1))
+		 (cc (- amount
+			(first-denomination kinds-of-coins))
+		     kinds-of-coins)))))
+
+(define (count-change amount)
+  (cc amount 5))
+
+(define (function-helper func arg times)
+  (if
+  (equal?  times 0)
+  arg
+  (function-helper func (func  arg)  (- times 1))))
+
+(define (function func arg times)
+  (if
+   (empty? arg)
+   arg
+   (sentence (function-helper func (first arg) (first times)) (function func (bf arg) (bf times)))))
+
+(define (alter sent strat1 strat2)
+  (cond
+   ((empty? sent) sent)
+   ((equal? (count sent) 1) (strat1  (first sent)))
+   (else (sentence (strat1 (first sent)) (strat2 (first (bf sent))) (alter (bf (bf sent)) strat1 strat2)))))
+
+(define (alter f g)
+(define (procedure sent)
+  (cond
+   ((empty? sent) sent)
+   ((equal? (count sent) 1) (sentence (f  (first sent))))
+   (else (sentence (f (first sent)) (g (first (bf sent))) (procedure (bf (bf sent))))))) procedure)
+
+(define (alter f g)
+  (lambda (sent) 
+    (cond
+    ((empty? sent) sent)
+     ((equal? (count sent) 1) (sentence (f  (first sent))))
+     (else (sentence (f (first sent)) (g (first (bf sent))) ((alter f g) (bf (bf sent))))))))
+
+(define (alter1 f g)
+  (define (alt-helper f g s)
+    (if (empty? s)
+        '()
+        (se (f (first s)) (alt-helper g f (bf s)))))
+  (lambda (sent) (alt-helper f g sent)))
+
+(define (alter2 f g)
+  (lambda (s)
+    (if (empty? s)
+        '()
+        (se (f (first s)) ((alter2 g f) (bf s))))))
+
+(define (bad-every f s)
+  (cond
+   ((empty? s) s)
+   ((equal? (count s) 1) (se (f (first s))))
+   (else (se (f (first s)) (first (bf s)) (bad-every f (bf (bf s)))))))
+
+(define (make-bad-function fnc)
+  (define (helper1 sent)
+    (cond
+     ((empty? sent) sent)
+     ((equal? (count sent) 1) (se (fnc (first sent))))
+     (else (se (fnc (first sent)) (first(bf sent)) (helper1 (bf (bf sent))))))) helper1)
+
+(define (alter f g)
+  (lambda (sent) 
+    (cond
+    ((empty? sent) sent)
+     (else (sentence (f (first sent)) (g (first (bf sent))) ((alter f g) (bf (bf sent))))))))
